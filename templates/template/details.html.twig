@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Template Details{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h3>{{ template.name }}</h3>
+        <a class="btn btn-primary" href="{{ url('app_template_update', { id: template.id }) }}">Update</a>
+        <hr/>
+        <h3>Entries</h3>
+            {{ form_start(searchForm) }}
+                <div class="row">
+                    {% for field in searchForm %}
+                        <div class="col-4 mb-2 d-flex justify-content-start align-items-center">
+                            <div class="form-group flex-grow-1">
+                                {{ form_label(field) }}
+                                {{ form_widget(field) }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {{ form_end(searchForm) }}
+        {% if posts is not empty %}
+            <table class="table table-bordered mt-4">
+                <tbody>
+                    {% for post in posts %}
+                        <tr>
+                            <td><a href="{{ url('app_post_details', { id: post.id }) }}">Post ({{ post.id }})</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+{% endblock %}

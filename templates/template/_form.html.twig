@@ -1,0 +1,29 @@
+{{ form_start(form) }}
+    <div class="row" id="js-template-field-wrapper"
+         data-prototype="{{ form_widget(form.templateFields.vars.prototype)|e('html_attr') }}"
+         data-index="{{ form.templateFields|length }}"
+    >
+        <div class="col-12">
+            {{ form_row(form.name) }}
+        </div>
+        <div class="col-12">
+            {{ form_row(form.active) }}
+        </div>
+        <div class="col-12">
+            Template Fields
+            <div class="row" id="js-template-field-list">
+                {% for templateField in form.templateFields %}
+                    <div class="col-12 template-field-item" id="js-template-field-item">
+                        <div class="form-group">
+                            {{ form_label(templateField) }}
+                            {{ form_widget(templateField) }}
+                            {{ form_errors(templateField) }}
+                            <button type="button" class="btn btn-danger btn-sm" id="js-template-field-remove">Remove</button>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <button type="button" class="btn btn-secondary" id="js-template-field-add">+</button>
+        </div>
+    </div>
+{{ form_end(form) }}

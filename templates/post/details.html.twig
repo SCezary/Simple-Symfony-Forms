@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Post Details{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h3>Here is your Post ID - {{ post.id }}</h3>
+        {% if post.postValues is not empty %}
+            <table class="table">
+                <tbody>
+                {% for postValue in post.postValues|sort((a, b) => a.templateField.order <=> a.templateField.order) %}
+                    <tr>
+                        <td>{{ postValue.templateField.label }}</td>
+                        <td>{{ postValue.value }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+        <a class="btn btn-primary" href="{{ url('app_post_update', { id: post.id }) }}">Update</a>
+    </div>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create Template{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h3>New Template</h3>
+        {% include 'template/_form.html.twig' with {form: form, isNew: true} %}
+    </div>
+{% endblock %}
