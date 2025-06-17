@@ -91,7 +91,9 @@ final class TemplateController extends AbstractController
             'method' => 'GET',
         ]);
 
-        $posts = $postRepository->searchPostsByTemplate($request, $template);
+        $queryParams = $request->query->all()['post_search'] ?? [];
+        $posts = $postRepository->searchByTemplateFields($template, $queryParams);
+
         return $this->render('template/details.html.twig', [
             'template' => $template,
             'searchForm' => $searchForm,

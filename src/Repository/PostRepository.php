@@ -19,7 +19,7 @@ class PostRepository extends ServiceEntityRepository
         parent::__construct($registry, Post::class);
     }
 
-    public function searchPostsByTemplate(Request $request, Template $template): array
+    public function searchByTemplateFields(Template $template, array $queryParams = []): array
     {
         $query = $this->createQueryBuilder('p')
             ->setParameter('template', $template)
@@ -27,15 +27,18 @@ class PostRepository extends ServiceEntityRepository
             ->join('p.postValues', 'pv')
             ->join('pv.templateField', 'tf');
 
-        $queryParams = $request->query->all()['post_search'] ?? [];
-//        $availableFields = array_map(fn(TemplateField $el) => $el->getSystemName(), $template->getTemplateFields()->toArray());
+        // Fetch available fields for provided template to avoid some issues
+        $availableFields = array_map(fn(TemplateField $el) => $el->getSystemName(), $template->getTemplateFields()->toArray());
 
+        // Handle template dynamic fields
         foreach ($queryParams as $key => $value) {
             $value = trim($value);
+
+            // Remove min/max prefix to have raw systemName
             $systemName = str_replace('min_', '', $key);
             $systemName = str_replace('max_', '', $systemName);
 
-            if (empty($value)) {
+            if (empty($value) || !in_array($systemName, $availableFields)) {
                 continue;
             }
 
@@ -43,7 +46,7 @@ class PostRepository extends ServiceEntityRepository
                 $systemName = str_replace('min_', '', $key);
                 $query->andWhere("pv.value >= :$key")
                     ->setParameter($key, $value);
-            } elseif (str_contains($key, 'max_')) {
+            } elseif (str_starts_with($key, 'max_')) {
                 $systemName = str_replace('max_', '', $key);
                 $query->andWhere("pv.value <= :$key")
                     ->setParameter($key, $value);
